@@ -244,7 +244,7 @@ function isNativeAbsolutePath(path: string, worktreePath: string): boolean {
 
 function trimTrailingNativeSeparators(path: string): string {
 	if (path === "/" || /^[A-Za-z]:[\\/]$/.test(path)) return path;
-	return path.replace(/[\\/]+$/, "") || path;
+	return path.replace(isWindowsNativePath(path) ? /[\\/]+$/ : /\/+$/, "") || path;
 }
 
 function nativeFileName(path: string, windows: boolean): string {
@@ -285,7 +285,10 @@ function workspaceCopyRelativePath(worktreePath: string, path: string): string {
 		windows && isWindowsNativePath(path),
 	);
 	if (prefixLength === null) return path;
-	return path.slice(prefixLength).replace(/^[\\/]+/, "") || nativeFileName(path, windows);
+	return (
+		path.slice(prefixLength).replace(windows ? /^[\\/]+/ : /^\/+/, "") ||
+		nativeFileName(path, windows)
+	);
 }
 
 export function joinWorkspacePath(worktreePath: string, relativePath: string): string {
@@ -295,7 +298,7 @@ export function joinWorkspacePath(worktreePath: string, relativePath: string): s
 	if (!relative) return root;
 	if (isNativeAbsolutePath(relative, worktreePath)) return relative;
 	const nativeRelative = separator === "\\" ? relative.replaceAll("/", "\\") : relative;
-	if (root.endsWith("/") || root.endsWith("\\")) return `${root}${nativeRelative}`;
+	if (root.endsWith(separator)) return `${root}${nativeRelative}`;
 	return root ? `${root}${separator}${nativeRelative}` : nativeRelative;
 }
 

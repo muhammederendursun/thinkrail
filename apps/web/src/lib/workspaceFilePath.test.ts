@@ -78,3 +78,18 @@ test("workspaceFileCopyText keeps a POSIX name with a literal backslash", () => 
 	expect(workspaceFileCopyText("/repo", "/repo/a\\b.ts", "relative")).toBe("a\\b.ts");
 	expect(joinWorkspacePath("/repo\\name", "file.ts")).toBe("/repo\\name/file.ts");
 });
+
+test("joinWorkspacePath preserves a literal backslash at the end of a POSIX worktree name", () => {
+	expect(joinWorkspacePath("/repo\\", "file.ts")).toBe("/repo\\/file.ts");
+	expect(joinWorkspacePath("/repo\\/", "file.ts")).toBe("/repo\\/file.ts");
+	expect(workspaceFileCopyText("/repo\\", "/repo\\/file.ts", "relative")).toBe("file.ts");
+});
+
+test("workspaceFileCopyText preserves a leading literal backslash in a POSIX file name", () => {
+	expect(workspaceFileCopyText("/repo", "/repo/\\file.ts", "relative")).toBe("\\file.ts");
+	expect(workspaceFileCopyText("/repo", "/repo/\\file.ts", "absolute")).toBe("/repo/\\file.ts");
+	expect(workspaceFileCopyText("/repo\\", "/repo\\/\\file.ts", "relative")).toBe("\\file.ts");
+	expect(workspaceFileCopyText("/repo\\", "/repo\\/\\file.ts", "absolute")).toBe(
+		"/repo\\/\\file.ts",
+	);
+});
