@@ -305,6 +305,7 @@ import {
 	markClientStale,
 	releaseItemFix,
 } from "./todoReview";
+import { revealWorkspace } from "./workspaceReveal";
 
 const log = logger("host");
 
@@ -733,10 +734,7 @@ const handlers: WsHandlers = {
 		openEditor(p.editor, getWorkspace(p.id).worktreePath);
 		return { ok: true } as const;
 	},
-	"workspace.reveal": (params) => {
-		revealInFileManager(getWorkspace(params.id).worktreePath);
-		return { ok: true } as const;
-	},
+	"workspace.reveal": (params) => revealWorkspace(params),
 	"editor.list": () => listAvailableEditors(),
 	"git.listBranches": (params) => listBranches(params.projectId),
 	"git.prefetch": async (p) => {

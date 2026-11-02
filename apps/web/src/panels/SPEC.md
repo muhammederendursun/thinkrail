@@ -250,8 +250,14 @@ treatment.
   the editor. Right-clicking a file or folder row — or the Context Menu key / Shift+F10 on a focused row —
   offers **Copy path** (the workspace worktree path joined with the row, keeping a UNC prefix and POSIX
   literal backslashes) and **Copy relative path** (the row's host-produced worktree-relative path).
-  A compacted directory copies its deepest path, matching the row label.
-  Copying identifies the clicked row and does not open or select it. A failed first status read shows no marks; a failed refresh keeps the last ones, like the
+  A compacted directory targets its deepest path, matching the row label. The same menu offers
+  **Reveal in Finder** / **Show in Explorer** / **Reveal in file manager**, named for the host platform.
+  `FileRevealMenuItem` is shared with file/diff tab menus; its request action calls `workspace.reveal`
+  with the captured workspace and relative path, rechecking `selectCanRevealWorkspaceItem` before sending.
+  It stays disabled offline or before `WORKSPACE_ITEM_REVEAL_PROTOCOL_VERSION`, with a localized reason;
+  failures use the shared error-toast convention. Revealing and copying never open, select, keep or expand
+  the target. Missing items surface an error rather than falling back to another folder.
+  A failed first status read shows no marks; a failed refresh keeps the last ones, like the
   Changed list. The tree's look is remembered per workspace across reloads (`store.filesTreeByWorkspace`:
   All expanded folders, Changed-tree collapsed folders shared by every scope, scroll per view through
   `RememberedScrollArea` — a Changed view's scroll belongs to its scope and compare target, so changing

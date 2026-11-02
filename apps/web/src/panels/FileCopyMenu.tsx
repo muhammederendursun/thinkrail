@@ -6,7 +6,7 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@thinkrail/ui/context-menu";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { copyText, workspaceFileCopyText } from "@/lib";
 
 export function fileTreeCopyRelativePath(
@@ -27,10 +27,12 @@ export function copyFileTreePath(
 export function FileCopyMenu({
 	worktreePath,
 	relativePath,
+	additionalActions,
 	children,
 }: {
 	worktreePath: string;
 	relativePath: string;
+	additionalActions?: ReactNode;
 	children: ReactElement;
 }) {
 	const t = useT();
@@ -65,6 +67,7 @@ export function FileCopyMenu({
 					<Copy />
 					{t("panels.fileTree.copyRelativePath")}
 				</ContextMenuItem>
+				{additionalActions}
 			</ContextMenuContent>
 		</ContextMenu>
 	);

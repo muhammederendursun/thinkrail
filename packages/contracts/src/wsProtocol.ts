@@ -135,7 +135,8 @@ export type TemplateReadLocation =
 	| { projectId: string; workspaceId?: never }
 	| { workspaceId?: never; projectId?: never };
 
-export const PROTOCOL_VERSION = 102;
+export const PROTOCOL_VERSION = 103;
+export const WORKSPACE_ITEM_REVEAL_PROTOCOL_VERSION = 103;
 export const FONTS_PROTOCOL_VERSION = 102;
 export const CUSTOM_ENDPOINTS_PROTOCOL_VERSION = 101;
 export const PI_PACKAGES_PROTOCOL_VERSION = 100;
@@ -786,7 +787,7 @@ export interface WsMethodMap {
 		result: WorkspaceWatchReadyResult;
 	};
 	"workspace.openIn": { params: { id: string; editor: string }; result: Ack };
-	"workspace.reveal": { params: { id: string }; result: Ack };
+	"workspace.reveal": { params: { id: string; path?: string }; result: Ack };
 	"editor.list": { params: Record<string, never>; result: EditorInfo[] };
 	"git.listBranches": { params: { projectId: string }; result: BranchList };
 	"git.prefetch": { params: { projectId: string; ref: string }; result: { ok: boolean } };
@@ -1261,6 +1262,7 @@ export interface WsResume {
 export type WsClientMessage = WsRequest | WsAck | WsResume;
 
 export type WsErrorCode =
+	| "FILE_REVEAL_FAILED"
 	| "UNKNOWN_COMMIT"
 	| "PUSH_AUTH_FAILED"
 	| "NOT_GIT"

@@ -30,6 +30,7 @@ import {
 	sameModel,
 	tallyResources,
 	type WireModel,
+	WORKSPACE_ITEM_REVEAL_PROTOCOL_VERSION,
 	WORKSPACE_READ_STATE_PROTOCOL_VERSION,
 	WORKSPACE_SETTLE_PROTOCOL_VERSION,
 	type Workspace,
@@ -116,6 +117,14 @@ export function isConnectedGeneration(
 
 interface ProtocolState {
 	protocolVersion: number | null;
+}
+
+export function selectCanRevealWorkspaceItem(state: ProtocolState & { status: string }): boolean {
+	return (
+		state.status === "connected" &&
+		state.protocolVersion !== null &&
+		state.protocolVersion >= WORKSPACE_ITEM_REVEAL_PROTOCOL_VERSION
+	);
 }
 
 export function selectCanRenameChat(state: ProtocolState): boolean {

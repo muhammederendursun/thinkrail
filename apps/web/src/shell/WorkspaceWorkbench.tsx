@@ -26,6 +26,7 @@ import { QuietScrollArea } from "../components/QuietScrollArea";
 import { type LayoutAttention, layoutResourceIdentity } from "../lib";
 import { DiffPane } from "../panels/DiffPane";
 import { FilePane } from "../panels/FilePane";
+import { FileRevealMenuItem } from "../panels/FileRevealMenuItem";
 import { FilesPanel } from "../panels/FilesPanel";
 import { startChatInTab } from "../panels/openChat";
 import { fileComparisonTab, openFileInTab } from "../panels/openTabs";
@@ -841,6 +842,9 @@ export function WorkspaceWorkbench({ workspaceId }: { workspaceId: string }) {
 				subscribeCloseRequest={subscribeCloseRequest}
 				renderTabBody={renderTabBody}
 				renderTabAdornment={renderTabAdornment}
+				renderFileTabActions={(tab) => (
+					<FileRevealMenuItem workspaceId={workspaceId} path={tab.path} />
+				)}
 				renderToolBody={renderToolBody}
 				renderEmptyCenter={renderEmptyCenter}
 				renderCenterActions={renderCenterActions}

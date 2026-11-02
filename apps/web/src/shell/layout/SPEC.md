@@ -235,6 +235,11 @@ preview, the four splits) and auxiliary terminals carry no splits. File and diff
 and **Copy relative path** in a separate group; other kinds omit them. Copying identifies the clicked
 tab and does not select or keep it. The shell injects the workspace worktree path so the layout can join
 it with the tab's file path without importing store or transport.
+The optional shell-injected `renderFileTabActions` adds feature actions to that same group only for file
+and diff tabs. Reveal uses the clicked tab's current worktree `path`, including on a historical diff,
+never its `before` content or Git blob. Its host capability, connection gating and request handling stay
+outside layout. Context Menu / Shift+F10 opens the focused tab's menu without selecting or keeping it;
+revealing also leaves resource selection, preview state and layout attention untouched.
 
 ## Presets and local persistence
 

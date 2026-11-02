@@ -10,6 +10,7 @@ import { getTransport } from "../transport";
 import { type ChangeMarks, statusMarkClass } from "./changesModel";
 import { holdEditorWarm, useEditorWarm, warmOnHover } from "./editorWarm";
 import { FileCopyMenu, fileTreeCopyRelativePath } from "./FileCopyMenu";
+import { FileRevealMenuItem } from "./FileRevealMenuItem";
 import { type ResolvedFolderChain, resolveFolderChain } from "./folderChains";
 import { openFileInTab } from "./openTabs";
 import { TreeRow } from "./TreeRow";
@@ -124,6 +125,7 @@ function FileNodeRow({
 
 	const label = directory?.label ?? node.name;
 	const representedPaths = directory?.paths ?? [node.path];
+	const relativePath = fileTreeCopyRelativePath(node, directory);
 	const expanded = expandedPaths.has(directory?.path ?? node.path);
 	const children = directory?.children ?? null;
 	const toggleDirectory = () => {
@@ -149,7 +151,8 @@ function FileNodeRow({
 		<li>
 			<FileCopyMenu
 				worktreePath={worktreePath}
-				relativePath={fileTreeCopyRelativePath(node, directory)}
+				relativePath={relativePath}
+				additionalActions={<FileRevealMenuItem workspaceId={workspaceId} path={relativePath} />}
 			>
 				<TreeRow
 					ref={revealRow}

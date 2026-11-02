@@ -98,6 +98,7 @@ export interface TabStripProps {
 	chatFirstPrompts?: WorkbenchProps["chatFirstPrompts"];
 	canFocusAdjacentGroup: boolean;
 	renderTabAdornment: WorkbenchProps["renderTabAdornment"];
+	renderFileTabActions?: WorkbenchProps["renderFileTabActions"];
 	splitGeometry?: { horizontal: boolean; vertical: boolean };
 	trailing?: ReactNode;
 	worktreePath: string;
@@ -151,6 +152,7 @@ export const TabStrip = memo(function TabStrip({
 	chatFirstPrompts,
 	canFocusAdjacentGroup,
 	renderTabAdornment,
+	renderFileTabActions,
 	splitGeometry,
 	trailing,
 	worktreePath,
@@ -260,6 +262,7 @@ export const TabStrip = memo(function TabStrip({
 							{...(chatFirstPrompts ? { chatFirstPrompts } : {})}
 							canFocusAdjacentGroup={canFocusAdjacentGroup}
 							renderTabAdornment={renderTabAdornment}
+							renderFileTabActions={renderFileTabActions}
 							worktreePath={worktreePath}
 							draggingTab={draggingTab}
 							panelId={panelId}
@@ -409,6 +412,7 @@ export interface WorkbenchTabProps {
 	chatFirstPrompts?: WorkbenchProps["chatFirstPrompts"];
 	canFocusAdjacentGroup: boolean;
 	renderTabAdornment: WorkbenchProps["renderTabAdornment"];
+	renderFileTabActions?: WorkbenchProps["renderFileTabActions"];
 	worktreePath: string;
 	draggingTab: LayoutTab | null;
 	panelId: string;
@@ -444,6 +448,7 @@ export const WorkbenchTab = memo(function WorkbenchTab({
 	chatFirstPrompts,
 	canFocusAdjacentGroup,
 	renderTabAdornment,
+	renderFileTabActions,
 	worktreePath,
 	draggingTab,
 	panelId,
@@ -673,7 +678,21 @@ export const WorkbenchTab = memo(function WorkbenchTab({
 				: "editor-tab";
 	return (
 		<ContextMenu>
-			<ContextMenuTrigger asChild>
+			<ContextMenuTrigger
+				asChild
+				onKeyDown={(event) => {
+					if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10")) return;
+					event.preventDefault();
+					const rect = event.currentTarget.getBoundingClientRect();
+					event.currentTarget.dispatchEvent(
+						new MouseEvent("contextmenu", {
+							bubbles: true,
+							clientX: rect.left,
+							clientY: rect.bottom,
+						}),
+					);
+				}}
+			>
 				<div
 					ref={setDragRef}
 					role="presentation"
@@ -832,6 +851,7 @@ export const WorkbenchTab = memo(function WorkbenchTab({
 						>
 							{t("workbench.tab.copyRelativePath")}
 						</ContextMenuItem>
+						{tab.kind === "file" || tab.kind === "diff" ? renderFileTabActions?.(tab) : null}
 					</>
 				) : null}
 				{location.area === "center" ? (
